@@ -61,7 +61,7 @@ export default function NewCaseScreen({ navigation }) {
       } else {
         await pendingCasesCollection.add(payload);
       }
-      navigation.navigate('Dossiers');
+      navigation.navigate('Main', { screen: 'Dossiers' });
     } catch (e) {
       setErrors({ submit: e.error || "Erreur lors de l'envoi" });
     } finally {
