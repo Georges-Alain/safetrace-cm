@@ -1,6 +1,8 @@
 const router = require('express').Router();
 const Joi = require('joi');
 const { validate } = require('../../middleware/validate');
+const { requireAuth } = require('../../middleware/auth');
+const db = require('../../config/db');
 const authService = require('./auth.service');
 
 const registerSchema = Joi.object({
@@ -37,6 +39,15 @@ router.post('/refresh', async (req, res) => {
     res.json(result);
   } catch (e) {
     res.status(e.status || 500).json({ error: e.message });
+  }
+});
+
+router.patch('/users/me/push-token', requireAuth, async (req, res) => {
+  try {
+    await db('users').where({ id: req.user.id }).update({ push_token: req.body.pushToken });
+    res.json({ ok: true });
+  } catch {
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 

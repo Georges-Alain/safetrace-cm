@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useAuthStore } from '../store/auth.store';
+import { usePushNotifications } from '../hooks/usePushNotifications';
 import MainTabs from './MainTabs';
 import PhoneScreen from '../screens/auth/PhoneScreen';
 import OTPScreen from '../screens/auth/OTPScreen';
@@ -13,11 +14,14 @@ const Stack = createStackNavigator();
 
 export default function AppNavigator() {
   const { accessToken, restoreSession } = useAuthStore();
+  const navigationRef = useRef();
 
   useEffect(() => { restoreSession(); }, []);
 
+  usePushNotifications(navigationRef);
+
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!accessToken ? (
           <>
