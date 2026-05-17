@@ -52,7 +52,7 @@ export default function MapScreen({ navigation }) {
         <UrlTile
           urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           maximumZ={18}
-          shouldReplaceMapContent
+          shouldReplaceMapContent={true}
         />
         {filtered.map((c) => (
           <Marker
