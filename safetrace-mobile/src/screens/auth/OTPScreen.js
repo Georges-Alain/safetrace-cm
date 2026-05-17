@@ -45,7 +45,7 @@ export default function OTPScreen({ route }) {
           placeholder="• • • • • •"
           placeholderTextColor={colors.text3}
           textAlign="center"
-          autoFocus
+          autoFocus={true}
         />
 
         {!!error && <Text style={styles.error}>{error}</Text>}

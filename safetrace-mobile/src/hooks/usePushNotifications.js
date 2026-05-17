@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react';
-import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import client from '../api/client';
 
-// Push notifications were removed from Expo Go in SDK 53.
-// They work only in development builds and production builds.
+// expo-notifications was removed from Expo Go in SDK 53.
+// We avoid importing it at module level so the native JSI module
+// never initializes in Expo Go.
 const isExpoGo = Constants.appOwnership === 'expo';
 
 export function usePushNotifications(navigationRef) {
@@ -14,6 +14,9 @@ export function usePushNotifications(navigationRef) {
 
   useEffect(() => {
     if (isExpoGo) return;
+
+    // Dynamic require: only loads the native module in non-Expo Go builds
+    const Notifications = require('expo-notifications');
 
     Notifications.setNotificationHandler({
       handleNotification: async () => ({

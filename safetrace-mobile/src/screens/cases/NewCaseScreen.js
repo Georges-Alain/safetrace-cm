@@ -155,7 +155,7 @@ export default function NewCaseScreen({ navigation }) {
             placeholder="Ex: Portait une chemise bleue et un jean..."
             placeholderTextColor={colors.text3}
             value={description} onChangeText={setDescription}
-            multiline
+            multiline={true}
           />
         </View>
 

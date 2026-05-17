@@ -76,7 +76,7 @@ export default function TestimonyScreen({ navigation }) {
             placeholder="Décrivez ce que vous avez vu, où et quand..."
             placeholderTextColor={colors.text3}
             value={content} onChangeText={setContent}
-            multiline
+            multiline={true}
           />
         </View>
         {!!error && <Text style={{ color: colors.red, fontSize: 12, marginBottom: spacing.sm }}>{error}</Text>}
