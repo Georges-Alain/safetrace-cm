@@ -1,21 +1,28 @@
 import { useEffect, useRef } from 'react';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
+import Constants from 'expo-constants';
 import client from '../api/client';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+// Push notifications were removed from Expo Go in SDK 53.
+// They work only in development builds and production builds.
+const isExpoGo = Constants.appOwnership === 'expo';
 
 export function usePushNotifications(navigationRef) {
   const notifListener = useRef();
   const responseListener = useRef();
 
   useEffect(() => {
+    if (isExpoGo) return;
+
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+      }),
+    });
+
     (async () => {
       if (!Device.isDevice) return;
       const { status: existing } = await Notifications.getPermissionsAsync();
