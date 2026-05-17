@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuthStore } from '../store/auth.store';
 import { usePushNotifications } from '../hooks/usePushNotifications';
 import MainTabs from './MainTabs';
@@ -10,7 +10,10 @@ import NewCaseScreen from '../screens/cases/NewCaseScreen';
 import CaseDetailScreen from '../screens/cases/CaseDetailScreen';
 import TestimonyScreen from '../screens/testimony/TestimonyScreen';
 
-const Stack = createStackNavigator();
+// createNativeStackNavigator is required for New Architecture compatibility.
+// @react-navigation/stack (JS-based) passes gestureEnabled as a string
+// through Animated props, which crashes Fabric's JSI type checker.
+const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   const { accessToken, restoreSession } = useAuthStore();
