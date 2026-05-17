@@ -13,5 +13,6 @@ app.get('/health', (req, res) => res.json({ status: 'ok', ts: new Date() }));
 app.use('/api/auth', require('./modules/auth/auth.routes'));
 app.use('/api/cases', require('./modules/cases/cases.routes'));
 app.use('/api/testimonies', require('./modules/testimonies/testimonies.routes'));
+app.use('/api/admin', require('./modules/admin/admin.routes'));
 
 module.exports = app;
