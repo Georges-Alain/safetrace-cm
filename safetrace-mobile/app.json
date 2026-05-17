@@ -27,12 +27,18 @@
     },
     "ios": {
       "bundleIdentifier": "cm.safetrace.app",
+      "supportsTablet": true,
+      "entitlements": {
+        "aps-environment": "production"
+      },
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "SafeTrace utilise votre position pour les alertes de proximité.",
         "NSCameraUsageDescription": "Pour prendre une photo de la personne disparue.",
-        "NSPhotoLibraryUsageDescription": "Pour choisir une photo depuis votre galerie."
-      },
-      "supportsTablet": true
+        "NSPhotoLibraryUsageDescription": "Pour choisir une photo depuis votre galerie.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "SafeTrace utilise votre position pour les alertes de proximité.",
+        "UIBackgroundModes": ["remote-notification"],
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
