@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
-import MapView, { Marker, UrlTile, Callout } from 'react-native-maps';
-import { Filter } from 'lucide-react-native';
+import { Filter, Map } from 'lucide-react-native';
 import { useCasesStore } from '../../store/cases.store';
 import { useLocation } from '../../hooks/useLocation';
-import MapPin from '../../components/MapPin';
+import { isExpoGo } from '../../utils/env';
 import { colors, spacing, radius } from '../../theme';
 
 const CAMEROON_REGION = {
@@ -17,6 +16,19 @@ const CAMEROON_REGION = {
 const STATUS_LABELS = {
   ALL: 'Tous', ACTIVE: 'Actifs', INQUIRY: 'Enquête', RESOLVED: 'Retrouvés'
 };
+
+function MapPlaceholder() {
+  return (
+    <View style={styles.placeholder}>
+      <Map size={48} color={colors.text3} />
+      <Text style={styles.placeholderTitle}>Carte non disponible</Text>
+      <Text style={styles.placeholderSub}>
+        La carte interactive nécessite un build de développement.{'\n'}
+        Elle sera disponible dans l'application finale.
+      </Text>
+    </View>
+  );
+}
 
 export default function MapScreen({ navigation }) {
   const { nearbyCases, fetchNearbyCases } = useCasesStore();
@@ -43,6 +55,29 @@ export default function MapScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
+      {isExpoGo ? (
+        <MapPlaceholder />
+      ) : (
+        <MapViewSection
+          location={location}
+          filtered={filtered}
+          filter={filter}
+          setFilter={setFilter}
+          navigation={navigation}
+        />
+      )}
+    </SafeAreaView>
+  );
+}
+
+// Lazy component: react-native-maps is only imported when NOT in Expo Go
+function MapViewSection({ location, filtered, filter, setFilter, navigation }) {
+  const MapView = require('react-native-maps').default;
+  const { Marker, UrlTile, Callout } = require('react-native-maps');
+  const MapPin = require('../../components/MapPin').default;
+
+  return (
+    <>
       <MapView
         style={styles.map}
         initialRegion={CAMEROON_REGION}
@@ -85,7 +120,7 @@ export default function MapScreen({ navigation }) {
           </TouchableOpacity>
         ))}
       </View>
-    </SafeAreaView>
+    </>
   );
 }
 
@@ -117,4 +152,14 @@ const styles = StyleSheet.create({
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 5 },
   legendDot: { width: 8, height: 8, borderRadius: 4 },
   legendText: { fontSize: 10, color: colors.text3 },
+  placeholder: {
+    flex: 1, alignItems: 'center', justifyContent: 'center',
+    padding: spacing.xl, gap: spacing.md,
+  },
+  placeholderTitle: {
+    fontSize: 16, fontWeight: '700', color: colors.text2, textAlign: 'center',
+  },
+  placeholderSub: {
+    fontSize: 12, color: colors.text3, textAlign: 'center', lineHeight: 18,
+  },
 });
