@@ -1,10 +1,15 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useFonts, Syne_700Bold, Syne_800ExtraBold } from '@expo-google-fonts/syne';
 import { DMSans_400Regular, DMSans_500Medium } from '@expo-google-fonts/dm-sans';
+import { useOfflineSync } from './src/hooks/useOfflineSync';
 import AppNavigator from './src/navigation/AppNavigator';
+
+function AppContent() {
+  useOfflineSync();
+  return <AppNavigator />;
+}
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
@@ -19,7 +24,7 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="light" />
-      <AppNavigator />
+      <AppContent />
     </GestureHandlerRootView>
   );
 }

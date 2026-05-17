@@ -5,6 +5,8 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { ChevronLeft, Camera, MapPin, AlertTriangle } from 'lucide-react-native';
+import NetInfo from '@react-native-community/netinfo';
+import { database, pendingCasesCollection } from '../../db/database';
 import { casesAPI } from '../../api/cases.api';
 import { useLocation } from '../../hooks/useLocation';
 import { colors, spacing, radius } from '../../theme';
@@ -42,17 +44,35 @@ export default function NewCaseScreen({ navigation }) {
   const handleSubmit = async () => {
     if (!validate()) return;
     setLoading(true);
+    const netState = await NetInfo.fetch();
+    const payload = {
+      person_name: name.trim(),
+      person_age: age ? parseInt(age) : undefined,
+      person_gender: gender || undefined,
+      last_seen_location: lastSeen.trim(),
+      description: description.trim() || undefined,
+      latitude: location.lat,
+      longitude: location.lng,
+      last_seen_at: new Date().toISOString(),
+    };
     try {
-      await casesAPI.create({
-        person_name: name.trim(),
-        person_age: age ? parseInt(age) : undefined,
-        person_gender: gender || undefined,
-        last_seen_location: lastSeen.trim(),
-        description: description.trim() || undefined,
-        latitude: location.lat,
-        longitude: location.lng,
-        last_seen_at: new Date().toISOString(),
-      });
+      if (netState.isConnected) {
+        await casesAPI.create(payload);
+      } else {
+        await database.write(async () => {
+          await pendingCasesCollection.create((record) => {
+            record.personName = payload.person_name;
+            record.personAge = payload.person_age || 0;
+            record.personGender = payload.person_gender || '';
+            record.lastSeenLocation = payload.last_seen_location;
+            record.description = payload.description || '';
+            record.latitude = payload.latitude;
+            record.longitude = payload.longitude;
+            record.lastSeenAt = payload.last_seen_at;
+            record.synced = false;
+          });
+        });
+      }
       navigation.navigate('Dossiers');
     } catch (e) {
       setErrors({ submit: e.error || "Erreur lors de l'envoi" });

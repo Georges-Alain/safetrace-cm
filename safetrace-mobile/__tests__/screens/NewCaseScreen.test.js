@@ -22,6 +22,20 @@ jest.mock('../../src/api/cases.api', () => ({
   },
 }));
 
+jest.mock('@react-native-community/netinfo', () =>
+  require('@react-native-community/netinfo/jest/netinfo-mock')
+);
+
+jest.mock('../../src/db/database', () => ({
+  database: {
+    write: jest.fn((fn) => fn()),
+  },
+  pendingCasesCollection: {
+    create: jest.fn(() => Promise.resolve()),
+    query: jest.fn(() => ({ fetch: jest.fn(() => Promise.resolve([])) })),
+  },
+}));
+
 const mockNavigation = { navigate: jest.fn(), goBack: jest.fn() };
 
 test('affiche le formulaire avec le bouton de soumission', () => {
