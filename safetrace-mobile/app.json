@@ -1,32 +1,53 @@
 {
   "expo": {
-    "name": "safetrace-mobile",
-    "slug": "safetrace-mobile",
+    "name": "SafeTrace",
+    "slug": "safetrace-cm",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true
+      "backgroundColor": "#080c14"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#f97316"
       },
+      "package": "cm.safetrace.app",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
+      ],
       "edgeToEdgeEnabled": true
+    },
+    "ios": {
+      "bundleIdentifier": "cm.safetrace.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "SafeTrace utilise votre position pour les alertes de proximité.",
+        "NSCameraUsageDescription": "Pour prendre une photo de la personne disparue.",
+        "NSPhotoLibraryUsageDescription": "Pour choisir une photo depuis votre galerie."
+      },
+      "supportsTablet": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      "expo-font",
+      "expo-location",
+      "expo-image-picker",
+      "expo-notifications",
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
+    }
   }
 }
