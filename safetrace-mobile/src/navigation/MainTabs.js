@@ -24,7 +24,7 @@ export default function MainTabs() {
         tabBarInactiveTintColor: colors.text3,
         tabBarIcon: ({ color, size }) => {
           const icons = { Accueil: Home, Carte: Map, Dossiers: FileText, Profil: User };
-          const Icon = icons[route.name];
+          const Icon = icons[route.name] ?? Home;
           return <Icon size={size} color={color} />;
         },
       })}

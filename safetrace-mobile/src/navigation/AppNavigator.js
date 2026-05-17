@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useAuthStore } from '../store/auth.store';
@@ -12,7 +12,9 @@ import TestimonyScreen from '../screens/testimony/TestimonyScreen';
 const Stack = createStackNavigator();
 
 export default function AppNavigator() {
-  const { accessToken } = useAuthStore();
+  const { accessToken, restoreSession } = useAuthStore();
+
+  useEffect(() => { restoreSession(); }, []);
 
   return (
     <NavigationContainer>
