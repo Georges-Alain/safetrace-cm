@@ -6,7 +6,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import { ChevronLeft, Camera, MapPin, AlertTriangle } from 'lucide-react-native';
 import NetInfo from '@react-native-community/netinfo';
-import { database, pendingCasesCollection } from '../../db/database';
+import { pendingCasesCollection } from '../../db/database';
 import { casesAPI } from '../../api/cases.api';
 import { useLocation } from '../../hooks/useLocation';
 import { colors, spacing, radius } from '../../theme';
@@ -59,19 +59,7 @@ export default function NewCaseScreen({ navigation }) {
       if (netState.isConnected) {
         await casesAPI.create(payload);
       } else {
-        await database.write(async () => {
-          await pendingCasesCollection.create((record) => {
-            record.personName = payload.person_name;
-            record.personAge = payload.person_age || 0;
-            record.personGender = payload.person_gender || '';
-            record.lastSeenLocation = payload.last_seen_location;
-            record.description = payload.description || '';
-            record.latitude = payload.latitude;
-            record.longitude = payload.longitude;
-            record.lastSeenAt = payload.last_seen_at;
-            record.synced = false;
-          });
-        });
+        await pendingCasesCollection.add(payload);
       }
       navigation.navigate('Dossiers');
     } catch (e) {

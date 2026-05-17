@@ -27,12 +27,10 @@ jest.mock('@react-native-community/netinfo', () =>
 );
 
 jest.mock('../../src/db/database', () => ({
-  database: {
-    write: jest.fn((fn) => fn()),
-  },
   pendingCasesCollection: {
-    create: jest.fn(() => Promise.resolve()),
-    query: jest.fn(() => ({ fetch: jest.fn(() => Promise.resolve([])) })),
+    add: jest.fn(() => Promise.resolve()),
+    getPending: jest.fn(() => Promise.resolve([])),
+    markSynced: jest.fn(() => Promise.resolve()),
   },
 }));
 
