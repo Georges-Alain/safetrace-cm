@@ -27,7 +27,7 @@ async function listCases({ page = 1, limit = 20, status, lat, lng, radiusKm = 50
     );
   }
 
-  const total = await query.clone().count('* as count').first();
+  const total = await query.clone().clearSelect().clearOrder().count('* as count').first();
   const data = await query.offset((page - 1) * limit).limit(limit);
 
   return { data, total: Number(total.count), page, limit };

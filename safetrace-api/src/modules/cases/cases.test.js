@@ -5,11 +5,18 @@ const db = require('../../config/db');
 
 process.env.JWT_SECRET = 'test_secret';
 
+let userId;
 function makeToken(role = 'FAMILY') {
-  return jwt.sign({ id: 'user-uuid-test', role }, 'test_secret');
+  return jwt.sign({ id: userId, role }, 'test_secret');
 }
 
-beforeAll(() => db.migrate.latest());
+beforeAll(async () => {
+  await db.migrate.latest();
+  await db('cases').del();
+  await db('users').del();
+  const [row] = await db('users').insert({ phone: '+237600000001', role: 'FAMILY' }).returning('id');
+  userId = row?.id ?? row;
+});
 afterAll(() => db.destroy());
 afterEach(() => db('cases').del());
 
@@ -46,11 +53,12 @@ test('GET /api/cases — retourne la liste paginée', async () => {
 });
 
 test('PATCH /api/cases/:id/status — OFFICER peut changer le statut', async () => {
-  const [caseId] = await db('cases').insert({
+  const [row] = await db('cases').insert({
     person_name: 'Test',
     status: 'PENDING',
     reporter_id: null
   }).returning('id');
+  const caseId = row?.id ?? row;
   const res = await request(app)
     .patch(`/api/cases/${caseId}/status`)
     .set('Authorization', `Bearer ${makeToken('OFFICER')}`)

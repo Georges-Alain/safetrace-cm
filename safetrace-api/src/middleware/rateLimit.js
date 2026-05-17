@@ -10,7 +10,8 @@ const caseLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 3,
   message: { error: 'Maximum 3 signalements par heure' },
-  keyGenerator: (req) => req.user?.id || req.ip
+  keyGenerator: (req) => req.user?.id || req.ip,
+  validate: { keyGeneratorIpFallback: false }
 });
 
 module.exports = { apiLimiter, caseLimiter };

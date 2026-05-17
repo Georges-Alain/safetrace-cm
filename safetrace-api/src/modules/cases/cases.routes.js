@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Joi = require('joi');
 const { requireAuth, requireRole } = require('../../middleware/auth');
 const { validate } = require('../../middleware/validate');
+const { caseLimiter } = require('../../middleware/rateLimit');
 const casesService = require('./cases.service');
 
 const createSchema = Joi.object({
@@ -16,7 +17,7 @@ const createSchema = Joi.object({
   longitude: Joi.number().min(-180).max(180).required()
 });
 
-router.post('/', requireAuth, validate(createSchema), async (req, res) => {
+router.post('/', requireAuth, caseLimiter, validate(createSchema), async (req, res) => {
   try {
     const c = await casesService.createCase(req.body, req.user.id);
     res.status(201).json(c);

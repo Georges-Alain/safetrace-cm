@@ -4,12 +4,18 @@ const app = require('../../app');
 const db = require('../../config/db');
 
 process.env.JWT_SECRET = 'test_secret';
-const token = () => `Bearer ${jwt.sign({ id: 'uid', role: 'CITIZEN' }, 'test_secret')}`;
 
-let caseId;
+let userId, caseId;
+const token = () => `Bearer ${jwt.sign({ id: userId, role: 'CITIZEN' }, 'test_secret')}`;
+
 beforeAll(async () => {
   await db.migrate.latest();
-  [caseId] = await db('cases').insert({ person_name: 'Test', status: 'ACTIVE' }).returning('id');
+  await db('cases').del();
+  await db('users').del();
+  const [userRow] = await db('users').insert({ phone: '+237600000002', role: 'CITIZEN' }).returning('id');
+  userId = userRow?.id ?? userRow;
+  const [caseRow] = await db('cases').insert({ person_name: 'Test', status: 'ACTIVE' }).returning('id');
+  caseId = caseRow?.id ?? caseRow;
 });
 afterAll(() => db.destroy());
 
