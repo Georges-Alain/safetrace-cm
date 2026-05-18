@@ -1,10 +1,21 @@
-import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+
+vi.mock('./store/auth.store', () => ({
+  useAuthStore: (selector) =>
+    selector({
+      isAuthenticated: false,
+      user: null,
+      restoreSession: vi.fn(),
+      logout: vi.fn(),
+    }),
+}));
+
 import App from '../App';
 
 describe('App', () => {
-  it('renders without crashing', () => {
-    const { container } = render(<App />);
-    expect(container.firstChild).toBeTruthy();
+  it('redirects unauthenticated user to login page', () => {
+    render(<App />);
+    expect(screen.getByPlaceholderText('+237 6XX XXX XXX')).toBeTruthy();
   });
 });
