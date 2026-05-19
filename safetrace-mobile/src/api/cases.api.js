@@ -5,4 +5,5 @@ export const casesAPI = {
   getById: (id) => client.get(`/cases/${id}`),
   create: (data) => client.post('/cases', data),
   resolve: (id) => client.post(`/cases/${id}/resolve`),
+  react: (id) => client.post(`/cases/${id}/react`),
 };
