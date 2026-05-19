@@ -108,20 +108,11 @@ export default function CaseDetailPage() {
         </div>
       </div>
 
+      {/* Action buttons */}
       <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
-        {c.status === 'PENDING' && (
-          <ActionBtn color={theme.colors.success} onClick={() => statusMutation.mutate('ACTIVE')} disabled={isPending}>
-            Valider
-          </ActionBtn>
-        )}
-        {(c.status === 'PENDING' || c.status === 'ACTIVE') && (
+        {c.status === 'ACTIVE' && (
           <ActionBtn color={theme.colors.warning} onClick={() => statusMutation.mutate('INQUIRY')} disabled={isPending}>
             Marquer urgent
-          </ActionBtn>
-        )}
-        {c.status === 'PENDING' && (
-          <ActionBtn color={theme.colors.textMuted} onClick={() => statusMutation.mutate('PENDING')} disabled={isPending}>
-            Demander révision
           </ActionBtn>
         )}
         {c.status !== 'RESOLVED' && (
