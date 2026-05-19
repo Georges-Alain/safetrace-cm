@@ -6,9 +6,9 @@ import Badge from '../components/Badge';
 import theme from '../theme';
 
 const TABS = [
-  { label: 'À valider', status: 'PENDING' },
-  { label: 'En cours',  status: 'ACTIVE,INQUIRY' },
-  { label: 'Archivés',  status: 'RESOLVED' },
+  { label: 'Actifs',  status: 'ACTIVE' },
+  { label: 'Urgents', status: 'INQUIRY' },
+  { label: 'Résolus', status: 'RESOLVED' },
 ];
 
 const TH = ({ children }) => (
@@ -101,12 +101,12 @@ export default function CasesPage() {
                       >
                         Voir
                       </Link>
-                      {c.status === 'PENDING' && (
+                      {c.status === 'ACTIVE' && (
                         <button
-                          onClick={() => validateMutation.mutate({ id: c.id, status: 'ACTIVE' })}
+                          onClick={() => validateMutation.mutate({ id: c.id, status: 'INQUIRY' })}
                           style={{
-                            background: `${theme.colors.success}20`,
-                            color: theme.colors.success,
+                            background: `${theme.colors.warning}20`,
+                            color: theme.colors.warning,
                             border: 'none',
                             borderRadius: 6,
                             padding: '0.25rem 0.75rem',
@@ -115,7 +115,7 @@ export default function CasesPage() {
                             fontFamily: 'DM Sans, sans-serif',
                           }}
                         >
-                          Valider
+                          Marquer urgent
                         </button>
                       )}
                     </div>

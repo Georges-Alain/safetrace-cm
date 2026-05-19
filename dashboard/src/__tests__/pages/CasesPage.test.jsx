@@ -24,16 +24,16 @@ const renderPage = () => {
 };
 
 describe('CasesPage', () => {
-  it('renders three tabs', () => {
+  it('renders three tabs with new labels', () => {
     renderPage();
-    expect(screen.getByText('À valider')).toBeTruthy();
-    expect(screen.getByText('En cours')).toBeTruthy();
-    expect(screen.getByText('Archivés')).toBeTruthy();
+    expect(screen.getByText('Actifs')).toBeTruthy();
+    expect(screen.getByText('Urgents')).toBeTruthy();
+    expect(screen.getByText('Résolus')).toBeTruthy();
   });
 
   it('switches active tab on click without crashing', () => {
     renderPage();
-    fireEvent.click(screen.getByText('En cours'));
-    expect(screen.getByText('En cours')).toBeTruthy();
+    fireEvent.click(screen.getByText('Urgents'));
+    expect(screen.getByText('Urgents')).toBeTruthy();
   });
 });
