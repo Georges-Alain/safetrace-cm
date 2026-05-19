@@ -26,3 +26,12 @@ test('GET /api/admin/stats — CITIZEN reçoit 403', async () => {
     .set('Authorization', citizenToken());
   expect(res.status).toBe(403);
 });
+
+test('GET /api/admin/stats — inclut reactions_total et testimonies_week', async () => {
+  const res = await request(app)
+    .get('/api/admin/stats')
+    .set('Authorization', officerToken());
+  expect(res.status).toBe(200);
+  expect(typeof res.body.reactions_total).toBe('number');
+  expect(typeof res.body.testimonies_week).toBe('number');
+});
