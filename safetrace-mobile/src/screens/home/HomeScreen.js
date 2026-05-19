@@ -13,9 +13,9 @@ export default function HomeScreen({ navigation }) {
   const { user } = useAuthStore();
   const { feedCases, loading, fetchFeed } = useCasesStore();
 
-  useEffect(() => { fetchFeed(); }, []);
+  useEffect(() => { fetchFeed(); }, [fetchFeed]);
 
-  const handleRefresh = useCallback(() => { fetchFeed(); }, []);
+  const handleRefresh = useCallback(() => { fetchFeed(); }, [fetchFeed]);
 
   const renderItem = useCallback(
     ({ item }) => (
