@@ -4,6 +4,7 @@ const { requireAuth, requireRole } = require('../../middleware/auth');
 const { validate } = require('../../middleware/validate');
 const { caseLimiter } = require('../../middleware/rateLimit');
 const casesService = require('./cases.service');
+const reactionsService = require('../reactions/reactions.service');
 
 const createSchema = Joi.object({
   person_name: Joi.string().min(2).max(150).required(),
@@ -72,6 +73,15 @@ router.get('/:id/testimonies', requireAuth, async (req, res) => {
     res.json(list);
   } catch (e) {
     res.status(500).json({ error: e.message });
+  }
+});
+
+router.post('/:id/react', requireAuth, async (req, res) => {
+  try {
+    const result = await reactionsService.toggleReaction(req.params.id, req.user.id);
+    res.json(result);
+  } catch (e) {
+    res.status(e.status || 500).json({ error: e.message });
   }
 });
 

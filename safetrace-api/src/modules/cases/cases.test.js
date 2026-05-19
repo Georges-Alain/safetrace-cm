@@ -52,6 +52,28 @@ test('GET /api/cases — retourne la liste paginée', async () => {
   expect(res.body).toHaveProperty('total');
 });
 
+test('POST /api/cases/:id/react — toggle HUG (première fois → reacted: true)', async () => {
+  const [row] = await db('cases').insert({ person_name: 'React Test', status: 'ACTIVE' }).returning('id');
+  const id = row?.id ?? row;
+  const res = await request(app)
+    .post(`/api/cases/${id}/react`)
+    .set('Authorization', `Bearer ${makeToken()}`);
+  expect(res.status).toBe(200);
+  expect(res.body.reacted).toBe(true);
+  expect(typeof res.body.count).toBe('number');
+});
+
+test('POST /api/cases/:id/react — deuxième appel retire la réaction (reacted: false)', async () => {
+  const [row] = await db('cases').insert({ person_name: 'React Test 2', status: 'ACTIVE' }).returning('id');
+  const id = row?.id ?? row;
+  const tok = `Bearer ${makeToken()}`;
+  await request(app).post(`/api/cases/${id}/react`).set('Authorization', tok);
+  const res = await request(app).post(`/api/cases/${id}/react`).set('Authorization', tok);
+  expect(res.status).toBe(200);
+  expect(res.body.reacted).toBe(false);
+  expect(res.body.count).toBe(0);
+});
+
 test('PATCH /api/cases/:id/status — OFFICER peut changer le statut', async () => {
   const [row] = await db('cases').insert({
     person_name: 'Test',
