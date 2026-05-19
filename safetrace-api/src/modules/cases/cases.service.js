@@ -15,22 +15,46 @@ async function createCase(data, reporterId) {
   return newCase;
 }
 
-async function listCases({ page = 1, limit = 20, status, lat, lng, radiusKm = 50 }) {
-  let query = db('cases').select('*').orderBy('created_at', 'desc');
+async function listCases({ page = 1, limit = 20, status, lat, lng, radiusKm = 50, userId }) {
+  const offset = (Number(page) - 1) * Number(limit);
 
-  if (status) query = query.where({ status });
+  let baseQuery = db('cases as c').orderBy('c.created_at', 'desc');
+
+  if (status) {
+    const statuses = status.split(',').map((s) => s.trim());
+    baseQuery = baseQuery.whereIn('c.status', statuses);
+  }
 
   if (lat && lng) {
-    query = query.whereRaw(
-      `ST_DWithin(location::geography, ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography, ?)`,
+    baseQuery = baseQuery.whereRaw(
+      `ST_DWithin(c.location::geography, ST_SetSRID(ST_MakePoint(?, ?), 4326)::geography, ?)`,
       [lng, lat, radiusKm * 1000]
     );
   }
 
-  const total = await query.clone().clearSelect().clearOrder().count('* as count').first();
-  const data = await query.offset((page - 1) * limit).limit(limit);
+  const totalResult = await baseQuery.clone().clearOrder().count('c.id as count').first();
 
-  return { data, total: Number(total.count), page, limit };
+  const data = await baseQuery
+    .clone()
+    .select([
+      'c.*',
+      db.raw(
+        `COALESCE((SELECT COUNT(*) FROM reactions r WHERE r.case_id = c.id AND r.type = 'HUG'), 0)::int AS reactions_count`
+      ),
+      db.raw(
+        `COALESCE((SELECT COUNT(*) FROM testimonies t WHERE t.case_id = c.id), 0)::int AS testimonies_count`
+      ),
+      userId
+        ? db.raw(
+            `EXISTS(SELECT 1 FROM reactions r2 WHERE r2.case_id = c.id AND r2.user_id = ? AND r2.type = 'HUG') AS user_reacted`,
+            [userId]
+          )
+        : db.raw(`false AS user_reacted`),
+    ])
+    .offset(offset)
+    .limit(Number(limit));
+
+  return { data, total: Number(totalResult.count), page: Number(page), limit: Number(limit) };
 }
 
 async function getCaseById(id) {

@@ -32,7 +32,7 @@ router.post('/', requireAuth, caseLimiter, validate(createSchema), async (req, r
 
 router.get('/', requireAuth, async (req, res) => {
   try {
-    const result = await casesService.listCases(req.query);
+    const result = await casesService.listCases({ ...req.query, userId: req.user.id });
     res.json(result);
   } catch (e) {
     res.status(e.status || 500).json({ error: e.message });

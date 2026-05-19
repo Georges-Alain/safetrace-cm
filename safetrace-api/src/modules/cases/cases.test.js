@@ -74,6 +74,19 @@ test('POST /api/cases/:id/react — deuxième appel retire la réaction (reacted
   expect(res.body.count).toBe(0);
 });
 
+test('GET /api/cases — retourne reactions_count, testimonies_count, user_reacted', async () => {
+  const [row] = await db('cases').insert({ person_name: 'Enrichi', status: 'ACTIVE' }).returning('id');
+  const res = await request(app)
+    .get('/api/cases')
+    .set('Authorization', `Bearer ${makeToken()}`);
+  expect(res.status).toBe(200);
+  const c = res.body.data.find((x) => x.person_name === 'Enrichi');
+  expect(c).toBeDefined();
+  expect(typeof c.reactions_count).toBe('number');
+  expect(typeof c.testimonies_count).toBe('number');
+  expect(typeof c.user_reacted).toBe('boolean');
+});
+
 test('PATCH /api/cases/:id/status — OFFICER peut changer le statut', async () => {
   const [row] = await db('cases').insert({
     person_name: 'Test',
