@@ -17,7 +17,7 @@ async function getStats() {
     ? Math.round((result.resolved / result.total) * 100)
     : 0;
 
-  const [reactionsResult, testimoniesTodayResult] = await Promise.all([
+  const [reactionsResult, testimoniesWeekResult] = await Promise.all([
     db('reactions').count('* as count').first(),
     db('testimonies')
       .where('created_at', '>=', db.raw("NOW() - INTERVAL '7 days'"))
@@ -26,7 +26,7 @@ async function getStats() {
   ]);
 
   result.reactions_total = Number(reactionsResult.count);
-  result.testimonies_week = Number(testimoniesTodayResult.count);
+  result.testimonies_week = Number(testimoniesWeekResult.count);
 
   return result;
 }

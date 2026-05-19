@@ -1,6 +1,9 @@
 const db = require('../../config/db');
 
 async function toggleReaction(caseId, userId) {
+  const caseExists = await db('cases').where({ id: caseId }).select('id').first();
+  if (!caseExists) throw { status: 404, message: 'Dossier introuvable' };
+
   const existing = await db('reactions')
     .where({ case_id: caseId, user_id: userId, type: 'HUG' })
     .first();

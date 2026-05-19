@@ -5,6 +5,7 @@ const { validate } = require('../../middleware/validate');
 const { caseLimiter } = require('../../middleware/rateLimit');
 const casesService = require('./cases.service');
 const reactionsService = require('../reactions/reactions.service');
+const testimonyService = require('../testimonies/testimonies.service');
 
 const createSchema = Joi.object({
   person_name: Joi.string().min(2).max(150).required(),
@@ -68,7 +69,6 @@ router.post('/:id/resolve', requireAuth, requireRole('OFFICER', 'ADMIN', 'FAMILY
 
 router.get('/:id/testimonies', requireAuth, async (req, res) => {
   try {
-    const testimonyService = require('../testimonies/testimonies.service');
     const list = await testimonyService.listByCaseId(req.params.id);
     res.json(list);
   } catch (e) {
