@@ -7,7 +7,7 @@ async function createCase(data, reporterId) {
     .insert({
       ...rest,
       reporter_id: reporterId,
-      status: 'PENDING',
+      status: 'ACTIVE',
       location: db.raw(`ST_SetSRID(ST_MakePoint(?, ?), 4326)`, [longitude, latitude])
     })
     .returning('*');

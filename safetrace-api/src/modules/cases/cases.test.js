@@ -35,7 +35,7 @@ test('POST /api/cases — crée un signalement (FAMILY)', async () => {
     });
   expect(res.status).toBe(201);
   expect(res.body).toHaveProperty('id');
-  expect(res.body.status).toBe('PENDING');
+  expect(res.body.status).toBe('ACTIVE');
 });
 
 test('POST /api/cases — 401 sans token', async () => {
