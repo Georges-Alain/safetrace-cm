@@ -6,7 +6,7 @@ import DashboardPage from '../../pages/DashboardPage';
 vi.mock('../../api/admin.api', () => ({
   adminAPI: {
     getStats: vi.fn().mockResolvedValue({
-      active: 12, pending: 5, resolved: 48, resolutionRate: 80,
+      active: 12, inquiry: 7, resolved: 48, resolutionRate: 80,
       reactions_total: 230, testimonies_week: 14,
     }),
   },
@@ -22,7 +22,8 @@ describe('DashboardPage', () => {
     );
     await waitFor(() => {
       expect(screen.getByText('12')).toBeTruthy();
-      expect(screen.getByText('5')).toBeTruthy();
+      expect(screen.getByText('7')).toBeTruthy();
+      expect(screen.getByText('48')).toBeTruthy();
       expect(screen.getByText('80%')).toBeTruthy();
       expect(screen.getByText('230')).toBeTruthy();
       expect(screen.getByText('14')).toBeTruthy();

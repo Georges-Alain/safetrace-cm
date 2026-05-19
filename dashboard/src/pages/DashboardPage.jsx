@@ -44,7 +44,7 @@ export default function DashboardPage() {
             marginBottom: '2rem',
           }}>
             <StatCard label="Cas actifs" value={stats?.active ?? 0} color={theme.colors.danger} />
-            <StatCard label="En attente" value={stats?.pending ?? 0} color={theme.colors.warning} />
+            <StatCard label="Urgents" value={stats?.inquiry ?? 0} color={theme.colors.warning} />
             <StatCard label="Résolus" value={stats?.resolved ?? 0} color={theme.colors.success} />
             <StatCard label="Taux de résolution" value={`${stats?.resolutionRate ?? 0}%`} color={theme.colors.police} />
           </div>
